@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect , useContext} from 'react';
 import { View, Text, StyleSheet, ScrollView, Modal, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Card, Avatar , Button , Title} from 'react-native-paper';
 import AddDriver from '../components/particular/AddDriver/AddDriver'
 import AddVehicle from '../components/particular/AddDriver/AddVehicle'
+import ModalContainer from '../components/general/ModalContainer';
+import AppBarr from '../components/general/AppBarr';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyContext from '../contextes/appContext';
 
-const FleetScreen = () => {
+const FleetScreen = ({user}) => {
   const [drivers, setDrivers] = useState([]);
   const [isVehicleModalVisible, setVehicleModalVisible] = useState(false);
   const [isDriverModalVisible, setDriverModalVisible] = useState(false);
-
+   const {globalState , setGlobalState} = useContext(MyContext)
   const toggleVehicleModal = () => setVehicleModalVisible(!isVehicleModalVisible);
   const toggleDriverModal = () => setDriverModalVisible(!isDriverModalVisible);
 
@@ -32,38 +36,40 @@ const FleetScreen = () => {
     setDriverModalVisible(false);
   };
 
-const vehicles = [
-  {
-    id: 1,
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT57OvHBznMr-tCN1Q4tNfdSK1ae8MYxZZoZA&usqp=CAU',
-    name: 'Nom du véhicule 1',
-    registrationNumber: 'ABC123',
-  },
-  {
-    id: 2,
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT57OvHBznMr-tCN1Q4tNfdSK1ae8MYxZZoZA&usqp=CAU',
-    name: 'Nom du véhicule 2',
-    registrationNumber: 'DEF456',
-  },
-    {
-    id: 3,
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT57OvHBznMr-tCN1Q4tNfdSK1ae8MYxZZoZA&usqp=CAU',
-    name: 'Nom du véhicule 2',
-    registrationNumber: 'DEF456',
-  },
-  // ... autres données
-];
+let vehicles = [
 
+];
+useEffect(()=>{
+   const getData =async ()=>{
+       const stringData = await AsyncStorage.getItem('myVehicle')
+         console.log(stringData)
+
+       if (stringData!==null) {
+         const data = JSON.parse(stringData) 
+
+         vehicles =   Object.entries(data).map(([id, item]) => ({ id, ...item }));   
+      console.log('vehicle',data)
+
+          }
+     }
+  getData()
+}, [])
+
+
+       if (globalState.vehicle) {
+          vehicles =   Object.entries(globalState.vehicle).map(([id, item]) => ({ id, ...item })); 
+       }
   return (
     <View style={styles.container}>
-      <ScrollView>
+        {
+          vehicles.length>0 ?   <ScrollView>
       <Title style={{textAlign: 'center'}}>Mes véhicules</Title>
         {vehicles.map((item, index) => (
      <TouchableOpacity style={styles.cardContainer}>
       <Card style={styles.card}>
-        <Card.Cover source={{ uri: item.image }} />
+        <Card.Cover source={{ uri: item.selectedImages.image1 }} />
         <Card.Content style={styles.cardContent}>
-          <Text style={styles.vehicleName}>{item.name}</Text>
+          <Text style={styles.vehicleName}>{item.vehicleName}</Text>
           <Text style={styles.registrationNumber}>{item.registrationNumber}</Text>
           <Button
             mode="contained"
@@ -79,7 +85,13 @@ const vehicles = [
       </Card>
     </TouchableOpacity>
         ))}
-      </ScrollView>
+      </ScrollView>:<View>
+        <Text>
+          Aucun véhicule ajouté 
+        </Text>
+
+      </View>
+        }
 
       <TouchableOpacity style={styles.floatingButton} onPress={toggleVehicleModal}>
         <Text style={styles.floatingButtonText}>+</Text>
@@ -91,13 +103,9 @@ const vehicles = [
         transparent={true}
         onRequestClose={toggleVehicleModal}
       >
-        <View style={styles.modalContainer}>
-           <View style={styles.modalContent}>
-               <ScrollView horizontal={false}>
-                <AddDriver />
-               </ScrollView>
-           </View>
-        </View>
+          <AppBarr title={'Ajouter un véhicule '} goBack={()=>setVehicleModalVisible(false)}></AppBarr>
+       <ModalContainer children={<AddVehicle  goBack={()=>setVehicleModalVisible(false)}/>
+}/>
       </Modal>
 
       <Modal
@@ -106,13 +114,9 @@ const vehicles = [
         transparent={true}
         onRequestClose={toggleDriverModal}
       >
-       <View style={styles.modalContainer}>
-           <View style={styles.modalContent}>
-               <ScrollView horizontal={false}>
-                <AddVehicle />
-               </ScrollView>
-           </View>
-        </View>
+        <AppBarr title={'Ajouter un chauffeur '} goBack={()=>setDriverModalVisible(false)}></AppBarr>
+       <ModalContainer children={<AddDriver />
+}/>
       </Modal>
     </View>
   );

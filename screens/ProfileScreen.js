@@ -5,8 +5,78 @@ import profileStyle from '../assets/styles/css/profile';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import ModalContainer from '../components/general/ModalContainer';
+import AppBarr from '../components/general/AppBarr';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PersonalInfos from '../components/particular/Profile/PersonalInfos';
+import UpDateForm from '../components/particular/Profile/Update';
+import RidesScreen from './RidesScreen';
+import RatingScreen from './RatingScreen';
 
 const Profile = ({  user }) => {
+  let renders
+  const [title , setTitle]= useState('')
+  const [render , setRender ]= useState()
+  const [components , setComponents] = useState(null)
+   useEffect(()=>{
+    
+
+   }, [])
+     renders= [
+    {
+      title: 'Informations personnelles',
+      render: <PersonalInfos />, 
+      route: 'personInfo'
+    }, 
+     {
+      title: 'Modifier mon profil',
+      render: <UpDateForm /> , 
+      route: 'update'
+    }, 
+     {
+      title: 'Langue',
+      render: <UpDateForm />,
+      route: 'langue'
+    }, 
+     {
+      title: 'Sécurité',
+      render: <UpDateForm />, 
+      route:'security'
+    }, 
+     {
+      title: 'Mes contrats',
+      render: <UpDateForm />,
+      route: 'contracts'
+    }, 
+    {
+      title: 'Confidentialité',
+      render: <UpDateForm />,
+      route: 'confidentiality'
+    }, 
+     {
+      title: 'Mes déplacement',
+      render: <RidesScreen />,
+      route:'rides'
+    },
+    {
+      title: 'Archivage',
+      render: <UpDateForm />,
+      route:'archivage'
+    },
+    {
+      title: 'Ma note globale',
+      render: <UpDateForm />,
+      route:'note'
+    },
+     {
+      title: "Notez l'application ",
+      render: <RatingScreen />,
+      route:'avis'
+    },
+
+  ]
+   
    const navigation = useNavigation()
    const [isModalVisible, setIsModalVisible] = useState(false);
   const [newPhoneNumber, setNewPhoneNumber] = useState(''); // État pour stocker le nouveau numéro de téléphone
@@ -14,6 +84,12 @@ const Profile = ({  user }) => {
   const handlePress = (item) => {
        
       setIsModalVisible(true); // Afficher la modale lorsque l'utilisateur appuie sur "Modifier"
+     renders.map((render , index)=>{
+       if (item===render.route) {
+          setRender(render.render)
+          setTitle(render.title)
+       }
+     })
    
   };
 
@@ -24,9 +100,7 @@ const Profile = ({  user }) => {
   };
 
 
-   useEffect(()=>{
-
-   },[])
+   
   return (
     <ScrollView style={profileStyle.container}>
       <View style={profileStyle.avatarContainer}>
@@ -39,43 +113,53 @@ const Profile = ({  user }) => {
 
       {/* Nom et prénom */}
       <View style={profileStyle.nameContainer}>
-        <Text style={profileStyle.nameText}>Hubert BAMBA</Text>
+        <Text style={profileStyle.nameText}>
+          Gaston MAKOBA
+        </Text>
       </View>
 
       {/* Numéro de téléphone et bouton "Modifier" */}
       <View style={profileStyle.contactContainer}>
-        <Text style={profileStyle.phoneNumber}> +123 456 789</Text>
-        <Button mode="contained" style={profileStyle.editButton}>
-         <Text style={{color: 'white'}} onPress={()=>handlePress('Modifier')}>Modifier</Text>
+        <Text style={profileStyle.phoneNumber}>
+         +237 99234447
+        </Text>
+        <Button mode="contained" style={profileStyle.editButton}  onPress={()=>handlePress('update')}>
+         <Text style={{color: 'white'}}>Modifier</Text>
         </Button>
       </View>
 
       {/* Liste des options */}
        <List.Section>
-        <TouchableOpacity onPress={() => handlePress('Sécurité')}>
+         <TouchableOpacity onPress={() => handlePress('personInfo')}>
+          <List.Item
+            title="Informations personnelles"
+            left={() => <List.Icon icon="account" />}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('security')}>
           <List.Item
             title="Sécurité"
             left={() => <List.Icon icon="lock" />}
           />
         </TouchableOpacity>
         <Divider />
-        <TouchableOpacity onPress={() => handlePress('Langue')}>
+        <TouchableOpacity onPress={() => handlePress('langue')}>
           <List.Item
             title="Langue"
             left={() => <List.Icon icon="earth" />}
           />
         </TouchableOpacity>
         <Divider />
-        <TouchableOpacity onPress={() => handlePress('Mes contrats')}>
+        <TouchableOpacity onPress={() => handlePress('contracts')}>
           <List.Item
             title="Mes contrats"
             left={() => <List.Icon icon="bus" />}
           />
         </TouchableOpacity>
         <Divider />
-        <TouchableOpacity onPress={() => handlePress('Mes factures')}>
+        <TouchableOpacity onPress={() => handlePress('note')}>
           <List.Item
-            title="Mes factures"
+            title="Ma note globale"
             left={() => <List.Icon icon="file-document" />}
           />
         </TouchableOpacity>
@@ -85,6 +169,13 @@ const Profile = ({  user }) => {
           <List.Item
             title="CGV/CGU"
             left={() => <List.Icon icon="bookmark" />}
+          />
+        </TouchableOpacity>
+          <Divider />
+        <TouchableOpacity onPress={() => handlePress('avis')}>
+          <List.Item
+            title="Notez l'application"
+            left={() => <List.Icon icon="star" />}
           />
         </TouchableOpacity>
         <Divider />
@@ -98,6 +189,13 @@ const Profile = ({  user }) => {
         <TouchableOpacity onPress={() => handlePress('Archivage')}>
           <List.Item
             title="Archivage"
+            left={() => <List.Icon icon="archive" />}
+          />
+        </TouchableOpacity>
+         <Divider />
+        <TouchableOpacity onPress={() => handlePress('rides')}>
+          <List.Item
+            title="Mes déplacements"
             left={() => <List.Icon icon="archive" />}
           />
         </TouchableOpacity>
@@ -129,17 +227,8 @@ const Profile = ({  user }) => {
           setIsModalVisible(false); // Cacher la modale lorsqu'on appuie sur le bouton de fermeture par exemple
         }}
       >
-        <View style={{}}>
-          <Text>Modifier le numéro de téléphone :</Text>
-          <TextInput
-            style={{}}
-            placeholder="Nouveau numéro de téléphone"
-            onChangeText={(text) => setNewPhoneNumber(text)}
-            value={newPhoneNumber}
-          />
-          <RNButton title="Enregistrer" onPress={handleSubmit} />
-          {/* Autres champs de formulaire si nécessaire */}
-        </View>
+        <AppBarr title={title} goBack={()=>{setIsModalVisible(false)}}/>
+       <ModalContainer children={render}/>
       </Modal>
     </ScrollView>
   );

@@ -8,7 +8,7 @@ import { Card } from 'react-native-paper';
 import StartScreen from '../screens/StartScreen';
 import HomeScreen from '../screens/HomeScreen';
 import DetailsScreen from '../screens/HomeScreen';
-import { SignUpScreen1, SignUpScreen2, SignUpScreen3 } from '../screens/SignUpScreen';
+import { SignUpScreen1, SignUpScreen2, SignUpScreen3 , SignUpScreen4, SignUpScreen5 } from '../screens/SignUpScreen';
 import SignInScreen from '../screens/SignInSreen';
 import MyContext, { MyProvider } from '../contextes/appContext';
 import { colors } from '../assets/styles/colors';
@@ -29,7 +29,6 @@ const Visitor = () => {
   const { globalState, setGlobalState } = useContext(MyContext);
   const headerStyle = {
     backgroundColor: colors.primary,
-    color: 'white' // Couleur d'arrière-plan personnalisée
   };
   const headerTintColor = 'white';
 
@@ -51,7 +50,8 @@ const Visitor = () => {
           options={{
             headerShown: true,
             headerStyle: headerStyle,
-            headerTintColor: 'white'
+           headerTintColor: 'white'
+
           }}
         />
         <Stack.Screen
@@ -63,9 +63,27 @@ const Visitor = () => {
             headerTintColor: 'white'
           }}
         />
+          <Stack.Screen
+          name="Créer un compte/Etape2/catégorie A"
+          component={SignUpScreen4}
+          options={{
+            headerShown: true,
+            headerStyle: headerStyle,
+            headerTintColor: 'white'
+          }}
+        />
         <Stack.Screen
           name="Créer un compte/catégorie B"
           component={SignUpScreen3}
+          options={{
+            headerShown: true,
+            headerStyle: headerStyle,
+            headerTintColor: 'white'
+          }}
+        />
+         <Stack.Screen
+          name="Créer un compte/Etape2/catégorie B"
+          component={SignUpScreen5}
           options={{
             headerShown: true,
             headerStyle: headerStyle,

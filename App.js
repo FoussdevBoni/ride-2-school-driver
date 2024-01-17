@@ -51,7 +51,7 @@ export default function App() {
   return (
  <PaperProvider theme={theme}>
    <MyProvider>
-    <StatusBar style="light" backgroundColor={colors.primary}/>
+    <StatusBar style="light" backgroundColor={''}/>
        <Navigation />
    </MyProvider>
   </PaperProvider>

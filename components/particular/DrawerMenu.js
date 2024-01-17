@@ -8,38 +8,57 @@ import { Divider } from 'react-native-paper'
 
 export const items = [
    {
-  icon: 'person-add',
-  route: 'Fleet'
-   },
-    {
+  icon: 'home',
+  name: 'Acceuil', 
+  route: 'Acceuil',
+  headerShow: false
+   }, 
+   {
   icon: 'map',
-  route: 'R2S'
-   }, 
-      {
-  icon: 'people',
-  route: 'Résa'
-   }, 
-      {
-  icon: 'warning',
-  route: 'Urgences'
+  name: 'R2S', 
+  route: 'Nouveau R2S',
+  headerShow: false
    }, 
       {
   icon: 'notifications',
-  route: 'Notifications'
+  name: 'Notifications',
+  route: 'Notifications',
+  headerShow: true
    }, 
       {
-  icon: 'time',
-  route: 'Mes historiques'
+  icon: 'person',
+  name: 'Profile',
+  route: 'Mon profile',
+    headerShow: true
+
    },
-         {
-  icon: 'cash',
-  route: 'Gas',
+ 
+    /*  {
+  icon: 'warning',
+  route: 'Les urgences',
+  headerShow: true
+   },
+   
+       {
+  icon: 'time',
+  route: 'Mes déplacements',
+    headerShow: true
+
+   },
+
+        {
+  icon: 'star',
+  route: 'Donner une note à Betacar',
+    headerShow: true
+
   
    },
-      {
-  icon: 'person',
-  route: 'Mon profile'
-   },
+    */
+   
+  
+  
+   
+     
 ]
 
 

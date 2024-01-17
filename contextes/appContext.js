@@ -15,7 +15,8 @@ export const MyProvider = (props) => {
       initialScreen: {
         route: '', 
         component: null
-      }
+      },
+      vehicle: null
      });
 
     return (

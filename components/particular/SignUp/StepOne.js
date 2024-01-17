@@ -4,21 +4,35 @@ import { View, StyleSheet , Text } from 'react-native';
 import { RadioButton, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native'
 import { colors } from '../../../assets/styles/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+const   setData = async (dataKey,val)=> {
+  try {
+     await AsyncStorage.setItem(dataKey , val)
+  } catch (error) {
+    alert("Une erreur s'est produite")
+  }
+}
 const StepOne = () => {
   const [isPrivateDriver, setIsPrivateDriver] = React.useState(true);
 const navigation = useNavigation()
 
-  const handleNext = () => {
+  const handleNext = async () => {
 
-      navigation.navigate("Créer un compte/Etape2")
        if (isPrivateDriver) {
-      navigation.navigate('Créer un compte/catégorie A');
-    } else {
       navigation.navigate('Créer un compte/catégorie B');
+      setData('driverType' , 'person')
+      
+    } else {
+      navigation.navigate('Créer un compte/catégorie A');
+      setData('driverType' ,'company')
     }
     
   };
+
+
+
 
   return (
     <View style={styles.container}>

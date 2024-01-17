@@ -1,8 +1,8 @@
-import  React , {useContext} from 'react';
+import  React , {useContext , useEffect , useState} from 'react';
 import { Button, View, Text ,TouchableOpacity } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Divider } from 'react-native-paper'
 import DrawerMenu ,{items}  from '../components/particular/DrawerMenu'
 import SlidingComponent from '../components/general/SlidingComponent'
@@ -21,30 +21,67 @@ import CustomHeader from '../components/general/CustomHeader'
 import DriverScreen from '../screens/DriverScreen'
 import R2SScreen from '../screens/R2SScreen'
 import FleetScreen from '../screens/FleetScreen'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PushNotifications from '../components/particular/PushNotif/PushNotif';
+import { colors } from '../assets/styles/colors';
+import RatingScreen from '../screens/RatingScreen';
+import RidesScreen from '../screens/RidesScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import UserHomeScreen from '../screens/UserHomeScreen';
+
+const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-const DrawerScreen = ()=>{
+
+const DrawerScreen = ({user})=>{
+  const components = [
+    <UserHomeScreen />,
+    <R2SScreen />,
+    <NotificationsScreen />,
+    <ProfileScreen />,
+
+  ]
+ const headerStyle = {
+    backgroundColor: colors.primary,
+  };
   return(
     <NavigationContainer>
-      <Drawer.Navigator 
+      <Tab.Navigator 
         useLegacyImplementation 
-        initialRouteName="Fleet"
+        initialRouteName={items[0].route}
+        
         drawerContent={props => <DrawerMenu {...props} />}
       >
-        <Drawer.Screen name="Fleet" component={FleetScreen} />
-        <Drawer.Screen name="Notifications" component={NotificationsScreen} />
-        <Drawer.Screen name="Signaler une urgence" component={UrgenceScreen} />
-        <Drawer.Screen name="Mon profile" component={ProfileScreen} />
-        <Drawer.Screen name="Mes historiques" component={HistoMenu} />
-          <Drawer.Screen name="Historique des transactions" component={HistoTrans} />
-        <Drawer.Screen name="Historique des déplacements" component={HistoRide} />
-         <Drawer.Screen name="Mes conducteurs" component={DriverScreen} />
-        <Drawer.Screen name="R2S" component={R2SScreen} />
+        {
+          items.map((item , index)=>{
+            return(
+                 <Tab.Screen
+        name={item.route}
+        
+        options={{
+          tabBarLabel: item.name,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name={item.icon}  size={26} color={color}/>
+          ),
+           headerTitleStyle: { // Style du titre dans l'en-tête
+        color: 'white', // Couleur du texte dans l'en-tête
+        textAlign: 'center', // Alignement du texte au centre
+        flex: 0, // Permet au texte de s'étendre pour être centré
+      },
+       
+           headerStyle: { // Style de l'en-tête
+        backgroundColor: colors.primary, // Couleur de fond de l'en-tête
+      },
+        }}
+      >
+         {props =>components[index]}
 
-
-        {/* Ajoutez d'autres écrans au Drawer ici */}
-      </Drawer.Navigator>
+      </Tab.Screen>
+            )
+          })
+        }
+      </Tab.Navigator>
 
     </NavigationContainer>
   )
@@ -57,7 +94,7 @@ const getGestureDirection = (route, navigation) => {
   return 'vertical';
 };
 
-const StackScreen = () => {
+const StackScreen = ({user}) => {
   const {globalState, setGlobalState} = useContext(MyContext)
   return (
     <NavigationContainer>
@@ -70,8 +107,8 @@ const StackScreen = () => {
         <Stack.Screen name="Configurer l'itinéraire" component={IteConfig}   screenOptions={{
         header: (props) => <CustomHeader title={"Configurer l'itinéraire"} />,  headerShown: false
       }}/>
-        <Stack.Screen name="Enrégister le gérant de cas" component={GerantDeCasForm} />
-        <Stack.Screen name="Choisir vos préférences" component={ChoixPreferenceForm} />
+        <Stack.Screen name="Enrégister le gérant de cas" element={<GerantDeCasForm />} />
+        <Stack.Screen name="Choisir vos préférences" element={<ChoixPreferenceForm />} />
         {/* Autres écrans de la stack ici */}
       
       </Stack.Navigator>
@@ -80,12 +117,48 @@ const StackScreen = () => {
 };
 export default function User() {
   const {globalState, setGlobalState} = useContext(MyContext)
+  const [driver , setDriver] = useState()
+    useEffect(() => {
+    const fetchData = async () => {
+      try {
+                const driverType =  await AsyncStorage.getItem('driverType');
+
+           if (driverType==='person') {
+               const dataString = await AsyncStorage.getItem('driverDataB');
+               if (dataString !== null) {
+                   const data = JSON.parse(dataString);
+                  setDriver(data);
+            
+            } else {
+              // Gérer le cas où les données ne sont pas trouvées dans AsyncStorage
+              console.log("Les données n'ont pas été trouvées dans AsyncStorage");
+         }
+       }else{
+           const dataString = await AsyncStorage.getItem('driverDataA');
+               if (dataString !== null) {
+                   const data = JSON.parse(dataString);
+                  setDriver(data);
+            
+            } else {
+              // Gérer le cas où les données ne sont pas trouvées dans AsyncStorage
+              console.log("Les données n'ont pas été trouvées dans AsyncStorage");
+         }
+       }
+       
+      } catch (error) {
+        // Gérer les erreurs lors de la récupération des données
+        console.error("Une erreur s'est produite lors de la récupération des données:", error);
+      }
+    };
+
+    fetchData();
+  }, []); 
   return (
        <View style={{flex: 1}}>
           {
             globalState.isDrawerScreen ?
-              <DrawerScreen />
-            : <StackScreen />
+              <DrawerScreen user={driver}/>
+            : <StackScreen user={driver}/>
           }
          
        </View>

@@ -4,12 +4,14 @@ import { IconButton, List, Colors, Avatar , Title} from 'react-native-paper';
 import Animated, { Easing } from 'react-native-reanimated';
 import LottieView from 'lottie-react-native'; // Assurez-vous que le nom du package est correct
 import {colors} from '../assets/styles/colors'
-const UrgenceScreen = () => {
+import { Ionicons } from '@expo/vector-icons';
+const UrgenceScreen = ({user}) => {
   const [emergencyType, setEmergencyType] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
 
   const possibilities  = [
+    
      { id: 5, type: 'Retard extrême', date: '24/10/2023' },
     { id: 6, type: 'Absence du chauffeur', date: '25/10/2023' },
     { id: 7, type: 'Maladie de l\'enfant', date: '23/10/2023' },
@@ -22,6 +24,13 @@ const UrgenceScreen = () => {
     { id: 2, type: 'Retard extrême', date: '24/10/2023' },
     { id: 3, type: 'Absence du chauffeur', date: '25/10/2023' },
     { id: 4, type: 'Maladie de l\'enfant', date: '23/10/2023' },
+    
+     { id: 5, type: 'Retard extrême', date: '24/10/2023' },
+    { id: 6, type: 'Absence du chauffeur', date: '25/10/2023' },
+    { id: 7, type: 'Maladie de l\'enfant', date: '23/10/2023' },
+    { id: 8, type: 'Retard extrême', date: '24/10/2023' },
+    { id: 9, type: 'Absence du chauffeur', date: '25/10/2023' }
+
    
   ]);
 
@@ -39,7 +48,31 @@ const UrgenceScreen = () => {
     <ScrollView style={styles.container}>
      
       <View style={styles.emergenciesContainer}>
-           {
+            
+            <FlatList
+          data={emergencies}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <List.Item
+               key={item.id.toString()}
+              title={item.type}
+              description={item.date}
+              left={(props) => (
+                <Avatar.Icon {...props} icon="alert" style={{ backgroundColor:'white' , color: Colors.red500}} />
+              )}
+              onPress={() => handleContact(item)}
+            />
+          )}
+        />
+      </View>
+        <TouchableOpacity onPress={() => handleEmergencyReport('')} style={styles.button}>
+        <Text style={[styles.buttonText , {color: 'black'}]}>Nouvelle urgence </Text>
+       
+      </TouchableOpacity>
+      <Modal visible={showModal2} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+               {
             possibilities.map((item) => {
               return(
                 <TouchableOpacity onPress={()=>setShowModal(true)}>
@@ -60,30 +93,6 @@ const UrgenceScreen = () => {
             })
           }
        
-      </View>
-        <TouchableOpacity onPress={() => handleEmergencyReport('')} style={styles.button}>
-        <Text style={[styles.buttonText , {color: 'black'}]}>Mes anciennes alertes</Text>
-      </TouchableOpacity>
-      <Modal visible={showModal2} animationType="slide" transparent>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-             <Text style={{textAlign: 'center', marginTop: 20}}>
-            Mes anciennes alertes
-          </Text>
-            <FlatList
-          data={emergencies}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <List.Item
-              title={item.type}
-              description={item.date}
-              left={(props) => (
-                <Avatar.Icon {...props} icon="alert" style={{ backgroundColor: Colors.red500 , color: Colors.white}} />
-              )}
-              onPress={() => handleContact(item)}
-            />
-          )}
-        />
             <TouchableOpacity onPress={() => setShowModal2(false)} style={styles.modalButton}>
               <Text style={styles.buttonText}>Fermer</Text>
             </TouchableOpacity>
@@ -124,7 +133,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginVertical: 20,
-    backgroundColor: Colors.white
+    backgroundColor: Colors.white,
+    justifyContent: 'center',
+    display: 'flex'
   },
   buttonText: {
     color: 'white',

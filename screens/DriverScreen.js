@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
 import { Card, Rating, Avatar, Icon, ListItem, Button } from 'react-native-elements';
 
-const DriverScreen = () => {
+const DriverScreen = ({user}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [driverRating, setDriverRating] = useState(0);
   const driverData = {   

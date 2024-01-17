@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
-import { View, Button , StyleSheet } from 'react-native';
-import {TextInput} from 'react-native-paper'
+import React, { useState , useEffect, useContext} from 'react';
+import { View,  StyleSheet, Text, Image, Dimensions } from 'react-native';
+import {Button, TextInput} from 'react-native-paper'
 import {colors} from '../../../assets/styles/colors'
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyContext from '../../../contextes/appContext';
 
-const AddVehicle = () => {
+
+const   setData = async (dataKey,val)=> {
+  try {
+     await AsyncStorage.setItem(dataKey , JSON.stringify(val))
+  } catch (error) {
+    alert("Une erreur s'est produite")
+  }
+}
+const AddVehicle = ({goBack}) => {
+  const {globalState , setGlobalState }= useContext(MyContext)
   const [vehicleName, setVehicleName] = useState('');
   const [model, setModel] = useState('');
   const [registrationNumber, setRegistrationNumber] = useState('');
@@ -13,12 +26,149 @@ const AddVehicle = () => {
   const [insurancePDF, setInsurancePDF] = useState('');
   const [lastTechnicalVisitDate, setLastTechnicalVisitDate] = useState('');
   const [technicalVisitPDF, setTechnicalVisitPDF] = useState('');
+  const [selectedImages, setSelectedImages] = useState({image1:null , image2:null , image3:null , image4:null});
+const [windowWidth, setWindowWidth] = useState(0);
 
-  const handleSave = () => {
-    // Ajoutez la logique pour soumettre le formulaire ici
+const selectImage = async (index) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+        setSelectedImages(prevState=>({
+          ...prevState,
+          ['image'+index]: result.assets[0].uri
+        }))
+    } else {
+      alert('You did not select any image.');
+    }
   };
 
-  return (
+const selectTechnicalVisitPDF = async () => {
+    try {
+      const document = await DocumentPicker.getDocumentAsync({
+        type: 'application/pdf', // Sélectionnez le type de fichier
+        copyToCacheDirectory: false,
+      });
+
+      if (document.type === 'success') {
+        setTechnicalVisitPDF(document.uri); // Stockez le chemin du fichier PDF sélectionné
+      }
+    } catch (error) {
+      console.log('Error selecting PDF:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    const getScreenWidth = async () => {
+      try {
+        const { width } =  Dimensions.get('window');
+        setWindowWidth(width);
+      } catch (error) {
+        console.error('Error getting screen width: ', error);
+      }
+    };
+    const deleteData = async ()=>{
+      try {
+        await AsyncStorage.removeItem('myVehicle')
+      } catch (error) {
+        
+      }
+    }
+     const getData =async ()=>{
+       const stringData = await AsyncStorage.getItem('myVehicle1')
+         console.log(stringData)
+
+       if (stringData!==null) {
+         const data = JSON.parse(stringData) 
+         setVehicleName(data.vehicleName)
+         setModel(data.model)
+         setRegistrationNumber(data.registrationNumber)
+         setInsurerName(data.insurerName)
+         setInsuranceNumber(data.insuranceNumber)
+         setInsuranceValidity(data.insuranceValidity)
+         setInsurancePDF(data.insurancePDF)
+         setLastTechnicalVisitDate(data.lastTechnicalVisitDate)
+         setTechnicalVisitPDF(data.technicalVisitPDF)
+         setSelectedImages(data.selectedImages)
+        console.log(data)
+       }
+     }
+    getScreenWidth();
+    getData()
+    deleteData()
+  }, []);
+  const myVehicle = {
+    vehicleName: vehicleName,
+    model: model,
+    registrationNumber: registrationNumber,
+    insurerName: insurerName,
+    insuranceNumber: insuranceNumber,
+    insuranceValidity: insuranceValidity,
+    insurancePDF: insurancePDF,
+    lastTechnicalVisitDate: lastTechnicalVisitDate,
+    technicalVisitPDF: technicalVisitPDF,
+    selectedImages: selectedImages,
+  }
+const handleSave = async ()=>{
+   try {
+     const dataString1 = await AsyncStorage.getItem('myVehicle1')
+      const dataString2 = await AsyncStorage.getItem('myVehicle2')
+   const dataString3 = await AsyncStorage.getItem('myVehicle3')
+
+   if (dataString1===null) {
+       setData('myVehicle1' , myVehicle)
+       setData('myVehicle' , {vehicle1: myVehicle})
+       setGlobalState(prevState =>({
+        ...prevState, 
+        vehicle:  {vehicle1: myVehicle}
+       }))
+       console.log( {vehicle1: myVehicle})
+            goBack()
+
+   }else if (dataString2===null) {
+      setData('myVehicle2' , myVehicle)
+      const vehicle1 = JSON.parse(dataString1)
+      setData('myVehicle' , {vehicle1: vehicle1 , vehicle2: myVehicle})
+        setGlobalState(prevState =>({
+        ...prevState, 
+        vehicle: {vehicle1: vehicle1 , vehicle2: myVehicle}
+       }))
+         goBack()
+       console.log({vehicle1: vehicle1 , vehicle2: myVehicle})
+
+    }else if (dataString3===null)  {
+        setData('myVehicle3' , myVehicle)
+        const vehicle1 = JSON.parse(dataString1)
+        const vehicle2 = JSON.parse(dataString2)
+      setData('myVehicle' , {vehicle1: vehicle1 , vehicle2: vehicle2 , vehicle3: myVehicle})
+
+        setGlobalState(prevState =>({
+        ...prevState, 
+        vehicle:  {vehicle1: vehicle1 , vehicle2: vehicle2 , vehicle3: myVehicle}
+       }))
+     goBack()
+    console.log('Mes vehicules' ,  {vehicle1: vehicle1 , vehicle2: vehicle2 , vehicle3: myVehicle})
+    }else{
+         const vehicle1 = JSON.parse(dataString1)
+        const vehicle2 = JSON.parse(dataString2)
+        const vehicle3 = JSON.parse(dataString3)
+
+        setGlobalState(prevState =>({
+        ...prevState, 
+        vehicle:  {vehicle1: vehicle1 , vehicle2: vehicle2 , vehicle3: vehicle3}
+       }))
+            goBack()
+
+    }
+
+   } catch (error) {
+    
+   }
+}
+ return (
     <View>
       <TextInput
               style={styles.input}
@@ -76,16 +226,26 @@ const AddVehicle = () => {
         value={lastTechnicalVisitDate}
         onChangeText={setLastTechnicalVisitDate}
       />
-      <TextInput
-        placeholder="Pdf de la visite technique"
-        value={technicalVisitPDF}
-        onChangeText={setTechnicalVisitPDF}
-      />
-      <Button title="Ajouter Photo arrière du véhicule" onPress={() => {}} style={styles.button}/>
-      <Button title="Ajouter Photo intérieur du véhicule" onPress={() => {}} style={styles.button}/>
-      <Button title="Ajouter Photo côté du véhicule" onPress={() => {}} style={styles.button}/>
-      <Button title="Ajouter Photo avant du véhicule" onPress={() => {}} style={styles.button}/>
-      <Button title="Soumettre" onPress={handleSave} style={styles.button}/>
+     
+      <Button onPress={selectTechnicalVisitPDF} style={styles.button}>
+        <Text style={styles.btnTextStyle}>Sélectionner PDF de la visite technique</Text>
+      </Button>
+
+       <Button onPress={()=>selectImage(1)} style={styles.button}>
+         <Text style={styles.btnTextStyle}>Ajouter Photo arrière du véhicule</Text>
+      </Button>
+       <Button  onPress={()=>selectImage(2)} style={styles.button}>
+         <Text style={styles.btnTextStyle}>Ajouter la photo intérieur du véhicule </Text>
+      </Button>
+       <Button  onPress={()=>selectImage(3)} style={styles.button}>
+         <Text style={styles.btnTextStyle}>Ajouter la photo côté du véhicule </Text>
+      </Button>
+       <Button  onPress={()=>selectImage(4)} style={styles.button}>
+        <Text style={styles.btnTextStyle}>Ajouter la photo avant du véhicule </Text>
+      </Button>
+      <Button  onPress={()=>handleSave()} style={styles.button}>
+         <Text style={styles.btnTextStyle}>Enrégistrer </Text>
+      </Button>
     </View>
   );
 };
@@ -110,4 +270,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: colors.primary
   },
+  btnTextStyle:{
+    color:'white'
+  }, 
+    image: {
+    height: 200,
+    marginTop: 20,
+  },
 });
+

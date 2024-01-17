@@ -1,13 +1,21 @@
 {
   "expo": {
+      "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permettre Ride-2-school d'utiliser votre localisation"
+        }
+      ]
+    ],
     "name": "ride-school-driver",
-    "slug": "snack-ccce3af6-e09a-4178-9da7-3b7343909888",
+    "slug": "snack-98a7fea6-c534-478e-9c92-530c0d9f33a4",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,13 +27,27 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      
+"config": {
+ "googleMaps": {
+ "apiKey":"AIzaSyDZxebBPFHMz2tm2DPvCjHQ9Cp3gUxMNTg"
+ }
+ },
+      "package": "com.bonidev.snack98a7fea6c534478e9c92530c0d9f33a4"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/logo.png"
     },
-    "description": "Application destininée au chauffeur "
+    "description": "Application destininée au chauffeur ",
+    "extra": {
+      "eas": {
+        "projectId": "6a8a2c5b-e55d-476f-9489-7383a91f9960"
+      }, 
+      "googleMapsApiKey": "AIzaSyDZxebBPFHMz2tm2DPvCjHQ9Cp3gUxMNTg"
+
+    }
   }
 }

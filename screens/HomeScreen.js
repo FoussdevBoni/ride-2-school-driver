@@ -1,15 +1,17 @@
 import * as React from 'react';
-import { View,  StyleSheet, Image , Text } from 'react-native';
+import { View,  StyleSheet, Image , Text, Dimensions } from 'react-native';
 import { Button } from 'react-native-paper';
 import {colors} from '../assets/styles/colors'
 import { useNavigation } from '@react-navigation/native';
+import PushNotification from '../components/particular/PushNotif/PushNotif';
 
-export default   HomeScreen = ({navigation})=> {
+export default   HomeScreen = ({navigation , user})=> {
+const { width, height } = Dimensions.get('window');
   return (
      <View>
-         <View>
-      <Image   style={{ width: 500, height: 500 }}source={require('../assets/images/banniarImage.jpg')} />
-    </View>
+         <View style={{padding: 10 , width: width , backgroundColor: colors.primary}}>
+          <Image   style={{ width: width, height: 500 }}source={require('../assets/images/banniar2.png')} />
+      </View>
 
 
     <View style={styles.container}>
@@ -20,20 +22,13 @@ export default   HomeScreen = ({navigation})=> {
        <View style={styles.actionsButtons}>
            <Button
       mode="contained"
-      onPress={() => navigation.navigate('Créer un compte/Etape1')}
+      onPress={() => navigation.navigate('Se connecter')}
       style={styles.signUpBtn}
       labelStyle={styles.label}
     >
-      Inscription
+      Se connecter 
     </Button>
-        <Button
-      mode=""
-      onPress={() => navigation.navigate('Se connecter')}
-      style={styles.signInBtn}
-      labelStyle={{color:  '#3498db'}}
-    >
-      Connexion
-    </Button>
+
        </View>
     </View>
      </View>

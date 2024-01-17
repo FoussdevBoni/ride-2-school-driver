@@ -83,6 +83,7 @@ const AddDriver = () => {
         label="Recto-verso CNI en PDF"
         value={cniPDF}
         onChangeText={setCniPDF}
+        keyboardType={'file'}
       />
       <TextInput
             style={styles.input}
@@ -90,6 +91,7 @@ const AddDriver = () => {
         label="Numéro du certificat de capacité"
         value={capacityCertificateNumber}
         onChangeText={setCapacityCertificateNumber}
+        keyboardType={'number'}
       />
       <TextInput
             style={styles.input}
@@ -97,7 +99,8 @@ const AddDriver = () => {
         label="Fichier PDF du certificat de capacité (recto-verso)"
         value={capacityCertificatePDF}
         onChangeText={setCapacityCertificatePDF}
-      
+        keyboardType={'file'}
+
       />
       <TextInput
         style={styles.input}

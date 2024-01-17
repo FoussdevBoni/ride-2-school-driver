@@ -3,28 +3,12 @@ import { View, StyleSheet, FlatList, Animated, Easing } from 'react-native';
 import NotificationItem from '../components/particular/NotificationItem';
 import { enableScreens } from 'react-native-screens';
 import { useFocusEffect } from '@react-navigation/native';
+import { notifications } from '../components/particular/PushNotif/PushNotif';
 
 enableScreens();
 
-const notifications = [
-  { id: '1', text: 'Nouveau message reçu', date: '10/24/2023' },
-  { id: '2', text: 'Vous avez une nouvelle demande d\'ami', date: '10/23/2023' },
-  { id: '3', text: 'Votre publication a reçu un nouveau commentaire', date: '10/22/2023' },
-  { id: '4', text: 'Quelqu\'un a aimé votre photo', date: '10/21/2023' },
-  { id: '5', text: 'Vous avez été mentionné dans un commentaire', date: '10/20/2023' },
-    { id: '1', text: 'Nouveau message reçu', date: '10/24/2023' },
-  { id: '2', text: 'Vous avez une nouvelle demande d\'ami', date: '10/23/2023' },
-  { id: '3', text: 'Votre publication a reçu un nouveau commentaire', date: '10/22/2023' },
-  { id: '4', text: 'Quelqu\'un a aimé votre photo', date: '10/21/2023' },
-  { id: '5', text: 'Vous avez été mentionné dans un commentaire', date: '10/20/2023' },
-    { id: '1', text: 'Nouveau message reçu', date: '10/24/2023' },
-  { id: '2', text: 'Vous avez une nouvelle demande d\'ami', date: '10/23/2023' },
-  { id: '3', text: 'Votre publication a reçu un nouveau commentaire', date: '10/22/2023' },
-  { id: '4', text: 'Quelqu\'un a aimé votre photo', date: '10/21/2023' },
-  { id: '5', text: 'Vous avez été mentionné dans un commentaire', date: '10/20/2023' },
-];
 
-const NotificationsScreen = () => {
+const NotificationsScreen = ({user}) => {
   const positionX = React.useRef(new Animated.Value(1000)).current;
 
   const config = {
@@ -61,7 +45,7 @@ const NotificationsScreen = () => {
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <NotificationItem text={item.text} date={item.date} />}
+        renderItem={({ item }) => <NotificationItem text={item.body} date={item.date} />}
       />
     </Animated.View>
   );
