@@ -14,20 +14,23 @@ export const items = [
   headerShow: false
    }, 
    {
-  icon: 'map',
+  icon: 'location',
   name: 'R2S', 
-  route: 'Nouveau R2S',
+  route: 'R2S',
   headerShow: false
    }, 
-      {
-  icon: 'notifications',
-  name: 'Notifications',
-  route: 'Notifications',
+  {
+
+  icon: 'people',
+  name: 'Enfants',
+  route: 'Enfants',
   headerShow: true
-   }, 
-      {
+
+   },
+
+  {
   icon: 'person',
-  name: 'Profile',
+  name: 'Profil',
   route: 'Mon profile',
     headerShow: true
 

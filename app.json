@@ -1,6 +1,6 @@
 {
   "expo": {
-      "plugins": [
+    "plugins": [
       [
         "expo-location",
         {
@@ -9,7 +9,6 @@
       ]
     ],
     "name": "ride-school-driver",
-    "slug": "snack-98a7fea6-c534-478e-9c92-530c0d9f33a4",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -30,13 +29,18 @@
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
-      
-"config": {
- "googleMaps": {
- "apiKey":"AIzaSyDZxebBPFHMz2tm2DPvCjHQ9Cp3gUxMNTg"
- }
- },
-      "package": "com.bonidev.snack98a7fea6c534478e9c92530c0d9f33a4"
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCNJXjPNJI96OQs2Qfin46-Ow7sSeXx8nA"
+
+        }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ],
+      "package": "com.bonidev.rideschooldriver"
     },
     "web": {
       "favicon": "./assets/images/logo.png"
@@ -44,10 +48,8 @@
     "description": "Application destininée au chauffeur ",
     "extra": {
       "eas": {
-        "projectId": "6a8a2c5b-e55d-476f-9489-7383a91f9960"
-      }, 
-      "googleMapsApiKey": "AIzaSyDZxebBPFHMz2tm2DPvCjHQ9Cp3gUxMNTg"
-
+        "projectId": "8f4c84ef-8bf1-4909-a51b-4aecdba2fda6"
+      }
     }
   }
 }

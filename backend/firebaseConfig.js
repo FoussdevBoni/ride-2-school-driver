@@ -6,15 +6,15 @@ import { get, getDatabase, ref, set } from "firebase/database";
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD6ZNeQ6_Z6ejine6cNU50Qjryd37LRvME",
-  authDomain: "solar-98875.firebaseapp.com",
-  databaseURL: "https://solar-98875-default-rtdb.firebaseio.com",
-  projectId: "solar-98875",
-  storageBucket: "solar-98875.appspot.com",
-  messagingSenderId: "421776051618",
-  appId: "1:421776051618:web:6099a6e97565911f6ab6fb",
-  measurementId: "G-DLM8TEFQ1Y"
-};
+  apiKey: "AIzaSyBZ9sJZeji6lYLbvkstmJLFkss7bI1Uhc8",
+  authDomain: "ride-2-school.firebaseapp.com",
+  databaseURL: "https://ride-2-school-default-rtdb.firebaseio.com",
+  projectId: "ride-2-school",
+  storageBucket: "ride-2-school.appspot.com",
+  messagingSenderId: "309273170745",
+  appId: "1:309273170745:web:6d5cbe5c640e3aa4d58ee8",
+  measurementId: "G-W0CRK6V93C"
+}
 const app = initializeApp(firebaseConfig);
 
 

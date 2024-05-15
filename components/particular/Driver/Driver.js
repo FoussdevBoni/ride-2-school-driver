@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import haversine from 'haversine';
-
+import {set , push , ref } from 'firebase/database';
+import { db } from './../../../backend/firebaseConfig';
 const LATITUDE_DELTA = 0.01;
 const LONGITUDE_DELTA = 0.01;
 
@@ -27,27 +28,31 @@ export default function Driver() {
         console.log('Permission to access location was denied');
         return;
       }
+    const updateLocation = (position) => {
+  const { latitude, longitude } = position.coords;
+  const newCoordinate = { latitude, longitude };
+  const dataRef = ref(db, 'location/chauffeur1')
+  set(dataRef, newCoordinate).then(() => {console.log('hhhh')})
+
+  mapRef.current.animateCamera({
+    center: newCoordinate,
+    zoom: 15,
+  });
+
+  setRouteCoordinates(prevCoordinates => [...prevCoordinates, newCoordinate]);
+  setDistanceTravelled(distanceTravelled + calcDistance(newCoordinate));
+  setPrevLatLng(newCoordinate);
+};
+
 
       const locationListener = await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 1000,
-          distanceInterval: 1,
-        },
-        position => {
-          const { latitude, longitude } = position.coords;
-          const newCoordinate = { latitude, longitude };
-
-          mapRef.current.animateCamera({
-            center: newCoordinate,
-            zoom: 15,
-          });
-
-          setRouteCoordinates([...routeCoordinates, newCoordinate]);
-          setDistanceTravelled(distanceTravelled + calcDistance(newCoordinate));
-          setPrevLatLng(newCoordinate);
-        }
-      );
+         {
+    accuracy: Location.Accuracy.BestForNavigation,
+    timeInterval: 60000,
+    distanceInterval: 1,
+  },
+  updateLocation
+  );
 
       return () => {
         if (locationListener) {

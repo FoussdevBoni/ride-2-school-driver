@@ -1,53 +1,67 @@
-import React from 'react';
-import { View, StyleSheet, FlatList, Animated, Easing } from 'react-native';
-import NotificationItem from '../components/particular/NotificationItem';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, FlatList, Animated, Easing, Text } from 'react-native';
 import { enableScreens } from 'react-native-screens';
-import { useFocusEffect } from '@react-navigation/native';
-import { notifications } from '../components/particular/PushNotif/PushNotif';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { onValue, ref } from 'firebase/database';
+import { ScrollView } from 'react-native-gesture-handler';
+import StackAppBarr from '../components/sections/User/Appbars/StackAppBar';
+import { db } from '../backend/firebaseConfig';
+import NotificationItem from '../components/particular/NotificationItem';
 
 enableScreens();
 
 
-const NotificationsScreen = ({user}) => {
-  const positionX = React.useRef(new Animated.Value(1000)).current;
 
-  const config = {
-    duration: 500,
-    easing: Easing.bezier(0.5, 0.01, 0, 1),
-  };
 
-  const style = {
-    transform: [{ translateX: positionX }],
-  };
+  
+const NotificationsScreen = () => {
+   const [notifications , setNotifications] = useState([])
+ const navigation = useNavigation()
 
-  useFocusEffect(
-    React.useCallback(() => {
-      Animated.timing(positionX, {
-        toValue: 0,
-        duration: config.duration,
-        easing: config.easing,
-        useNativeDriver: true,
-      }).start();
 
-      return () => {
-        Animated.timing(positionX, {
-          toValue: 1000,
-          duration: config.duration,
-          easing: config.easing,
-          useNativeDriver: true,
-        }).start();
-      };
-    }, [positionX, config])
-  );
+ 
+  useEffect(()=>{
+    const notificationsRef = ref(db, 'notifications')
+
+    onValue(notificationsRef , (sn)=>{
+      const data = sn.val()
+      if (data) {
+        const dataArray = Object.entries(data).map(([key , value])=>({
+          ...value,
+          id: key
+        }))
+
+        const filtered = dataArray.filter(notification=>(
+          notification?.receivers?.includes()
+        ))
+        setNotifications(filtered)
+      }
+    })
+  },[])
+   
+
 
   return (
-    <Animated.View style={[styles.container, style]}>
-      <FlatList
-        data={notifications}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <NotificationItem text={item.body} date={item.date} />}
-      />
-    </Animated.View>
+     <View style={styles.container}>
+        <StackAppBarr title={'Notifications'} goBack={navigation.goBack}/>
+          {
+            notifications.length>0 ? (
+                 <ScrollView style={{padding: 12}}>
+            {
+                notifications&&notifications.map((item)=>{
+                  return (
+                      <NotificationItem text={item?.body} date={item?.date}/>
+                  )
+                })
+            }
+        </ScrollView>
+            ):( <View style={{flex: 1 , justifyContent:'center' , alignItems: 'center'}}>
+                <Text>
+                  Aucune notification
+                </Text>
+            </View>)
+          }
+     </View>
   );
 };
 
@@ -55,8 +69,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    paddingHorizontal: 10,
-    paddingTop: 10,
+  
   },
 });
 

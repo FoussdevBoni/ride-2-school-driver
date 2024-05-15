@@ -22,6 +22,9 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 
 import {colors} from './assets/styles/colors'
+import { Provider, useSelector } from 'react-redux';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { store } from './redurcer/store';
 
 const theme = {
   ...DefaultTheme,
@@ -34,14 +37,16 @@ const theme = {
 
 
 const Navigation = ()=>{
-    const {globalState , setGlobalState} = useContext(MyContext)
-     if(!globalState.connected){
+   const currentUser = useSelector((state)=> state.currentUser)
+   console.log(currentUser.conected);
+     if(currentUser.conected){
+      console.log(currentUser)
         return (
-       <Visitor />
+       <User user={currentUser?.user}/>
         )
      }else{
         return (
-       <User />
+       <Visitor />
      )
      }
 }
@@ -50,10 +55,12 @@ export default function App() {
 
   return (
  <PaperProvider theme={theme}>
-   <MyProvider>
-    <StatusBar style="light" backgroundColor={''}/>
+ <GestureHandlerRootView style={{ flex: 1 ,backgroundColor: '#ECF0F1' }}>
+   <Provider store={store}>
+        <StatusBar style="light" backgroundColor={''}/>
        <Navigation />
-   </MyProvider>
+   </Provider>
+   </GestureHandlerRootView>
   </PaperProvider>
 
   );

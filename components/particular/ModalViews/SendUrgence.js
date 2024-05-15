@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Button, TextInput, Modal, Text, ScrollView, TouchableOpacity , FlatList} from 'react-native';
 import { IconButton, List, Colors, Avatar , Title} from 'react-native-paper';
 import Animated, { Easing } from 'react-native-reanimated';
@@ -7,11 +7,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../../assets/styles/colors';
 import AppBarr from '../../general/AppBarr';
 import ModalContainer from '../../general/ModalContainer';
-const SendUrgence = ({user}) => {
-  const [emergencyType, setEmergencyType] = useState('');
+import { push, ref } from 'firebase/database';
+import { db } from '../../../backend/firebaseConfig';
+const SendUrgence = ({user , child}) => {
+   
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(true);
-
+  const [urgence , setUrgence] = useState(null)
   const possibilities  = [
     
      { id: 5, type: 'Retard extrême', date: '24/10/2023' },
@@ -24,29 +26,58 @@ const SendUrgence = ({user}) => {
   ]
 
   const handleContact = (emergency) => {
-    // Logic to handle contacting the driver or school
-     setEmergencyType(emergency.type)
-    console.log('Contacting for emergency:', emergency);
+   setUrgence(emergency)
   };
 
 
    const UrgenceForm = ()=>{
+    
+    const [emergencyType, setEmergencyType] = useState('');
+  const [urgenceDetails , setUrgenceDetails] = useState('')
+  useEffect(()=>{
+      if (urgence!==null) {
+              setEmergencyType(urgence.type)
+
+      }
+    },[])
+    function sendUrgence(params) {
+        console.log('' , user)
+        const receivers = user.enfants.map((enfant)=>(enfant.parentId))
+
+      const urgence = {
+        type: emergencyType , 
+        details: urgenceDetails,
+        sender: user._id||user.id,
+        date: new Date().toISOString(),
+        receivers: child ? [child.parentId] : receivers
+      }
+
+      const dataRef = ref(db , 'urgences')
+
+      push(dataRef , urgence).then(()=>{
+        setShowModal(false)
+      })
+    }
     return (
     <View style={{flex: 1}}>
             <TextInput
            style={styles.input}
            placeholder="Type d'urgence"
            value={emergencyType}
-        onChange={(e)=>{
-            setEmergencyType(e.target.value)
+        onChangeText={(text)=>{
+            setEmergencyType(text)
         }}
       />
         <TextInput
          style={[styles.input, { height: 100 }]}
          placeholder="Détails d'urgence"
+         value={urgenceDetails}
+         onChangeText={(text)=>{
+           setUrgenceDetails(text)
+         }}
          multiline
        />
-       <TouchableOpacity onPress={() => setShowModal(false)} style={styles.modalButton}>
+       <TouchableOpacity onPress={() => sendUrgence()} style={styles.modalButton}>
          <Text style={styles.buttonText}>Envoyer</Text>
        </TouchableOpacity>
     </View>

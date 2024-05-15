@@ -4,15 +4,24 @@ import { Modal, StyleSheet, View } from 'react-native';
 import { FlatList } from 'react-native';
 import { Text, TouchableOpacity } from 'react-native';
 import { colors } from '../../../assets/styles/colors';
-import MyContext from '../../../contextes/appContext';
 import AppBarr from '../../general/AppBarr';
 import ModalContainer from '../../general/ModalContainer';
 import RidesScreen from '../../../screens/RidesScreen';
 import SendUrgence from '../ModalViews/SendUrgence';
 import { render } from 'react-dom';
+import Resa from '../ModalViews/Resa';
 
+
+
+
+function Links({user}) {
+   
 const links = [
-
+  {
+     name: 'La Résa', 
+    icon: 'person', 
+    render: <Resa />
+   },
     { 
         name: 'Contacter Betacar', 
         icon: 'call', 
@@ -26,17 +35,14 @@ const links = [
     {
      name: 'Envoyer une urgence', 
     icon: 'warning', 
-    render: <SendUrgence />
+    render: <SendUrgence user={user} />
    },
    {
      name: 'Historique de mes deplacements', 
     icon: 'bus', 
-    render: <RidesScreen />
+    render: <RidesScreen user={user}/>
    },
-    {
-     name: 'La Résa', 
-    icon: 'person'
-   },
+  
 
     {
      name: 'Ma note globale', 
@@ -45,12 +51,6 @@ const links = [
 
 
 ]
-
-
-
-function Links(props) {
-
-         const {globalState , setGlobalState} = useContext(MyContext)
      const [isModalVisible , setIsModalVisible ]= useState(false)
      const [title , setTitle] = useState('')
      const [render , setRender] = useState(null)

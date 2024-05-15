@@ -1,8 +1,8 @@
-import  React , {useContext , useEffect , useState} from 'react';
+import  React , {useContext , useEffect , useRef, useState} from 'react';
 import { Button, View, Text ,TouchableOpacity } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Divider } from 'react-native-paper'
 import DrawerMenu ,{items}  from '../components/particular/DrawerMenu'
 import SlidingComponent from '../components/general/SlidingComponent'
@@ -28,62 +28,70 @@ import RatingScreen from '../screens/RatingScreen';
 import RidesScreen from '../screens/RidesScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import UserHomeScreen from '../screens/UserHomeScreen';
+import TabAppBar from '../components/sections/User/Appbars/TabAppBar';
+import { useSelector } from 'react-redux';
+import ChildDetails from '../screens/ChildDetails';
+import ChildrenScreen from '../screens/Childrens';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 
-const DrawerScreen = ({user})=>{
+const TabScreen = ({user})=>{
   const components = [
-    <UserHomeScreen />,
-    <R2SScreen />,
-    <NotificationsScreen />,
-    <ProfileScreen />,
+    <UserHomeScreen  user={user}/>,
+    <R2SScreen  user={user}/>,
+    <ChildrenScreen  user={user}/>,
+    <ProfileScreen user={user}/>,
 
   ]
  const headerStyle = {
     backgroundColor: colors.primary,
   };
   return(
-    <NavigationContainer>
-      <Tab.Navigator 
-        useLegacyImplementation 
-        initialRouteName={items[0].route}
-        
-        drawerContent={props => <DrawerMenu {...props} />}
-      >
-        {
+    <Tab.Navigator  screenOptions={{
+        header: ({ route, navigation }) => (
+          <TabAppBar route={route} navigation={navigation} user={user}/>
+        )
+      }}>
+    {
           items.map((item , index)=>{
             return(
                  <Tab.Screen
-        name={item.route}
-        
-        options={{
-          tabBarLabel: item.name,
-          tabBarIcon: ({ color }) => (
-            <Ionicons name={item.icon}  size={26} color={color}/>
-          ),
-           headerTitleStyle: { // Style du titre dans l'en-tête
-        color: 'white', // Couleur du texte dans l'en-tête
-        textAlign: 'center', // Alignement du texte au centre
-        flex: 0, // Permet au texte de s'étendre pour être centré
-      },
+           name={item.route}
+           initialParams={{user: user}}
+           options={{
+              tabBarLabel: item.name,
+            tabBarIcon: ({ color }) => {
+             if (index===0) {
+                return (
+              <MaterialIcons name={item.icon}  size={26} color={color}/>
+            )
+             }else{
+                return (
+              <Ionicons name={item.icon}  size={26} color={color}/>
+            )
+             }
+            },
+             headerTitleStyle: { // Style du titre dans l'en-tête
+             color: 'white', // Couleur du texte dans l'en-tête
+             textAlign: 'center', // Alignement du texte au centre
+             flex: 0, // Permet au texte de s'étendre pour être centré
+            },
        
            headerStyle: { // Style de l'en-tête
-        backgroundColor: colors.primary, // Couleur de fond de l'en-tête
+           backgroundColor: colors.primary, // Couleur de fond de l'en-tête
       },
-        }}
-      >
+    }}
+>
          {props =>components[index]}
 
       </Tab.Screen>
             )
           })
         }
-      </Tab.Navigator>
-
-    </NavigationContainer>
+  </Tab.Navigator>
   )
 }
 
@@ -94,73 +102,31 @@ const getGestureDirection = (route, navigation) => {
   return 'vertical';
 };
 
-const StackScreen = ({user}) => {
-  const {globalState, setGlobalState} = useContext(MyContext)
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName = {globalState.initialScreen}
-        screenOptions={({ route, navigation }) => ({
-          gestureDirection: getGestureDirection(route, navigation),
-          ...TransitionPresets.SlideFromRightIOS, // ou toute autre transition que vous souhaitez utiliser
-        })}
-      >
-        <Stack.Screen name="Configurer l'itinéraire" component={IteConfig}   screenOptions={{
-        header: (props) => <CustomHeader title={"Configurer l'itinéraire"} />,  headerShown: false
-      }}/>
-        <Stack.Screen name="Enrégister le gérant de cas" element={<GerantDeCasForm />} />
-        <Stack.Screen name="Choisir vos préférences" element={<ChoixPreferenceForm />} />
-        {/* Autres écrans de la stack ici */}
-      
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
+
 export default function User() {
-  const {globalState, setGlobalState} = useContext(MyContext)
-  const [driver , setDriver] = useState()
-    useEffect(() => {
-    const fetchData = async () => {
-      try {
-                const driverType =  await AsyncStorage.getItem('driverType');
+  
+   const navigationRef = useRef(null);
+  const user = useSelector(state => state.currentUser.user)
 
-           if (driverType==='person') {
-               const dataString = await AsyncStorage.getItem('driverDataB');
-               if (dataString !== null) {
-                   const data = JSON.parse(dataString);
-                  setDriver(data);
-            
-            } else {
-              // Gérer le cas où les données ne sont pas trouvées dans AsyncStorage
-              console.log("Les données n'ont pas été trouvées dans AsyncStorage");
-         }
-       }else{
-           const dataString = await AsyncStorage.getItem('driverDataA');
-               if (dataString !== null) {
-                   const data = JSON.parse(dataString);
-                  setDriver(data);
-            
-            } else {
-              // Gérer le cas où les données ne sont pas trouvées dans AsyncStorage
-              console.log("Les données n'ont pas été trouvées dans AsyncStorage");
-         }
-       }
-       
-      } catch (error) {
-        // Gérer les erreurs lors de la récupération des données
-        console.error("Une erreur s'est produite lors de la récupération des données:", error);
-      }
-    };
-
-    fetchData();
-  }, []); 
   return (
-       <View style={{flex: 1}}>
-          {
-            globalState.isDrawerScreen ?
-              <DrawerScreen user={driver}/>
-            : <StackScreen user={driver}/>
-          }
-         
-       </View>
-  );
+ <View style={{flex: 1}}>
+    <NavigationContainer ref={navigationRef}>
+        <Stack.Navigator   screenOptions={({ route, navigation }) => ({
+          gestureDirection: getGestureDirection(route, navigation),
+          ...TransitionPresets.SlideFromRightIOS,
+        })}>
+
+       <Stack.Screen name="driver" options={{ headerShown: false }}>
+              {props=><TabScreen {...props} user={user} />}
+        </Stack.Screen>
+        <Stack.Screen name="notifications" options={{ headerShown: false }}>
+              {props=><NotificationsScreen {...props} user={user} />}
+        </Stack.Screen>
+          <Stack.Screen name="child-details" options={{ headerShown: false }}>
+              {props=><ChildDetails {...props} user={user} />}
+        </Stack.Screen>
+   </Stack.Navigator>
+    </NavigationContainer>
+ </View>
+);
 }

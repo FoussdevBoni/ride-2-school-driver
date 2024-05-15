@@ -12,6 +12,8 @@ import { SignUpScreen1, SignUpScreen2, SignUpScreen3 , SignUpScreen4, SignUpScre
 import SignInScreen from '../screens/SignInSreen';
 import MyContext, { MyProvider } from '../contextes/appContext';
 import { colors } from '../assets/styles/colors';
+import CharterScreen from '../screens/CharteScreen';
+import { useSelector } from 'react-redux';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -25,8 +27,8 @@ const getGestureDirection = (route, navigation) => {
 
 const Visitor = () => {
   const navigationRef = useRef(null);
-  const [connected, setConnected] = useState();
-  const { globalState, setGlobalState } = useContext(MyContext);
+     const currentUser = useSelector((state)=> state.currentUser)
+
   const headerStyle = {
     backgroundColor: colors.primary,
   };
@@ -93,6 +95,15 @@ const Visitor = () => {
         <Stack.Screen
           name="Se connecter"
           component={SignInScreen}
+          options={{
+            headerShown: true,
+            headerStyle: headerStyle,
+            headerTintColor: 'white'
+          }}
+        />
+         <Stack.Screen
+          name="charte de la communauté Ride 2 School"
+          component={CharterScreen}
           options={{
             headerShown: true,
             headerStyle: headerStyle,

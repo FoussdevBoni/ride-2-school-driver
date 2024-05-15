@@ -4,11 +4,19 @@ import { Button } from 'react-native-paper';
 import {colors} from '../assets/styles/colors'
 import { useNavigation } from '@react-navigation/native';
 import PushNotification from '../components/particular/PushNotif/PushNotif';
+import MaPosition from '../components/particular/Driver/MaPosition';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { driverDataApi } from '../utils/api';
 
 export default   HomeScreen = ({navigation , user})=> {
 const { width, height } = Dimensions.get('window');
+
+
+
   return (
      <View>
+      <MaPosition />
          <View style={{padding: 10 , width: width , backgroundColor: colors.primary}}>
           <Image   style={{ width: width, height: 500 }}source={require('../assets/images/banniar2.png')} />
       </View>

@@ -13,6 +13,8 @@ import PersonalInfos from '../components/particular/Profile/PersonalInfos';
 import UpDateForm from '../components/particular/Profile/Update';
 import RidesScreen from './RidesScreen';
 import RatingScreen from './RatingScreen';
+import { StyleSheet } from 'react-native';
+import { Image } from 'react-native';
 
 const Profile = ({  user }) => {
   let renders
@@ -105,29 +107,29 @@ const Profile = ({  user }) => {
     <ScrollView style={profileStyle.container}>
       <View style={profileStyle.avatarContainer}>
         {/* Icône pour changer le thème */}
-        <Avatar.Image
-          source={require('../assets/images/t3.jpg')}
+        <Image
+          source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvbqAEwufq2re6sbVsnQL4I362_xBU0xze1OjLhQqV7A&s'}}
           size={100}
+          style={styles.driverProfil}
+          
         />
       </View>
 
       {/* Nom et prénom */}
       <View style={profileStyle.nameContainer}>
         <Text style={profileStyle.nameText}>
-          Gaston MAKOBA
+          {user?.nom}
         </Text>
       </View>
 
       {/* Numéro de téléphone et bouton "Modifier" */}
       <View style={profileStyle.contactContainer}>
         <Text style={profileStyle.phoneNumber}>
-         +237 99234447
+          {user?.email}
         </Text>
-        <Button mode="contained" style={profileStyle.editButton}  onPress={()=>handlePress('update')}>
-         <Text style={{color: 'white'}}>Modifier</Text>
-        </Button>
+      
       </View>
-
+      <Divider />
       {/* Liste des options */}
        <List.Section>
          <TouchableOpacity onPress={() => handlePress('personInfo')}>
@@ -147,6 +149,7 @@ const Profile = ({  user }) => {
           <List.Item
             title="Langue"
             left={() => <List.Icon icon="earth" />}
+            
           />
         </TouchableOpacity>
         <Divider />
@@ -235,3 +238,18 @@ const Profile = ({  user }) => {
 };
 
 export default Profile;
+const styles = StyleSheet.create({
+    driverProfil:{
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      resizeMode: 'center',
+      borderColor: 'gray',
+      borderWidth: 2
+      
+    },
+    profilContainer: {
+        padding: 5, 
+
+    }
+})

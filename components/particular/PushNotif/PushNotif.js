@@ -42,10 +42,13 @@ export const notifications = [
   },
   // ... Ajoutez d'autres notifications selon vos besoins
 ];
+
+
 function getRandomElement(arr) {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
 }
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
