@@ -1,21 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import * as Location from 'expo-location';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { ref, set } from 'firebase/database';
 import { db } from '../../../backend/firebaseConfig';
 
-const Map = ({user , enfants}) => {
+const Map = ({ user, enfants }) => {
   const [location, setLocation] = useState(null);
+  const [prevLocation, setPrevLocation] = useState(null);
+  const [prevTime, setPrevTime] = useState(null);
   const [route, setRoute] = useState([]);
   const mapRef = useRef(null);
   const [distance, setDistance] = useState(0);
+  const [speed, setSpeed] = useState(0); // Nouvel état pour stocker la vitesse
   const [strokeWidth, setstrokeWidth] = useState(4);
   const [strokeColor, setstrokeColor] = useState('red');
-  const [ramassage , setRamassage ] = useState()
-  const [lieudepot , setLieudepot] = useState()
-        const driverId = user.id ||user._id
+  const [ramassage , setRamassage ] = useState();
+  const [lieudepot , setLieudepot] = useState();
+  const driverId = user.id || user._id;
 
   useEffect(() => {
     (async () => {
@@ -26,51 +29,45 @@ const Map = ({user , enfants}) => {
       }
 
       let location = await Location.getCurrentPositionAsync({});
+      if (location) {
+        setPrevLocation(location.coords); // Définir la position précédente lors de la première mise à jour
+        setPrevTime(new Date()); // Définir le temps précédent lors de la première mise à jour
+        sendMyPostion(location.coords);
+      }
       setLocation(location.coords);
     })();
   }, []);
 
-  useEffect(()=>{
-    function sendMyPostion() {
-    enfants.forEach(enfant => {
-        const data = {
-         diver: driverId ,
-         receiver: enfant.parentId,
-         enfant: enfant._id,
-         location: {
-          latitude: location.latitude,
-          longitude: location.longitude
-         } ,
-         distance: distance
-        }
-     const dataRef = ref(db, 'locations/'+driverId+'/'+enfant?.parentId)
+  function sendMyPostion(location) {
+    const dataRef = ref(db, 'locations/' + driverId);
 
-    set(dataRef , data)
-
-    });
+    const data = {
+      location: {
+        latitude: location.latitude,
+        longitude: location.longitude
+      },
+      distance: distance,
+      speed: speed // Envoyer la vitesse à Firebase
+    };
+    console.log('les coordonnées', data);
+    set(dataRef, data);
   }
-   if (location) {
-      sendMyPostion()
-   }
-  },[enfants , user , location , distance])
 
-   
-   useEffect(()=>{
-     if (enfants) {
-      const origine = enfants[0]?.ramassage[0]
-      const destination = enfants[0]?.lieudepot[0]
-      console.log('Les enfants',enfants[0]?.ramassage[0])
+  useEffect(() => {
+    if (enfants) {
+      const origine = enfants[0]?.ramassage[0];
+      const destination = enfants[0]?.lieudepot[0];
+      console.log('Les enfants', enfants[0]?.ramassage[0]);
       setRamassage({
-        latitude: origine.latitude ,
+        latitude: origine.latitude,
         longitude: origine.lontidute
-      })
+      });
       setLieudepot({
-         latitude: destination.latitude ,
+        latitude: destination.latitude,
         longitude: destination.lontidute
-      })
-     }
-   },[enfants])
-
+      });
+    }
+  }, [enfants]);
 
   const haversineDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; // Rayon de la Terre en kilomètres
@@ -95,16 +92,33 @@ const Map = ({user , enfants}) => {
   };
 
   useEffect(() => {
+    if (location !== null && prevLocation !== null && prevTime !== null) {
+      const currentTime = new Date();
+      const timeDiffInSeconds = (currentTime - prevTime) / 1000; // Convertir en secondes
+      const distance = haversineDistance(
+        prevLocation.latitude,
+        prevLocation.longitude,
+        location.latitude,
+        location.longitude
+      );
+      const speed = distance / timeDiffInSeconds; // Calculer la vitesse en km/h
+      setSpeed(speed);
+      setPrevLocation(location);
+      setPrevTime(currentTime);
+      sendMyPostion(location);
+    }
+  }, [location]);
+
+  useEffect(() => {
     if (location !== null) {
       const coords = [
         { latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude) },
-        { latitude: parseFloat(ramassage.latitude), longitude: parseFloat(ramassage.longitude) },
+        { latitude: parseFloat(ramassage?.latitude), longitude: parseFloat(ramassage?.longitude) },
         {
-          latitude: parseFloat(lieudepot.latitude),
-          longitude: parseFloat(lieudepot.longitude),
+          latitude: parseFloat(lieudepot?.latitude),
+          longitude: parseFloat(lieudepot?.longitude),
         },
       ];
-       console.log(coords)
       setRoute(coords);
       let totalDistance = 0;
       for (let i = 0; i < coords.length - 1; i++) {
@@ -116,16 +130,9 @@ const Map = ({user , enfants}) => {
         );
         totalDistance += distance;
       }
-
-      console.log(
-        'Distance totale entre les marqueurs:',
-        totalDistance.toFixed(2),
-        'km'
-      );
       setDistance(totalDistance.toFixed(2));
     }
   }, [location, strokeColor, strokeWidth]);
-
 
   if (!location) {
     return <Text>Chargement</Text>;
@@ -140,44 +147,37 @@ const Map = ({user , enfants}) => {
         longitudeDelta: 0.0421
       }}
       ref={mapRef}
-      
-          // onRegionChange={(region)=>console.log(region)}
+      provider={PROVIDER_GOOGLE}
       >
         <Marker
           coordinate={{
             latitude: parseFloat(location.latitude),
             longitude: parseFloat(location.longitude),
           }}
-           
-            title='Le chauffeur'
+          title='Le chauffeur'
           pinColor="blue"
           icon={()=><Ionicons name='home'  size={50} color={'red'}/>}
           image={require('../../../assets/images/icon-car.png')}
         />
-        
         <Marker
           coordinate={{
           latitude:   parseFloat(ramassage?.latitude),
-            longitude: parseFloat( ramassage.longitude),
+            longitude: parseFloat( ramassage?.longitude),
           }}
           title='Point de ramassage'
           pinColor="blue"
-         image={require('../../../assets/images/icon-student.png')}
+          image={require('../../../assets/images/icon-student.png')}
         />
-      
-          <Marker
+        <Marker
           coordinate={{
-            latitude: parseFloat(lieudepot.latitude),
-            longitude: parseFloat(lieudepot.longitude)
+            latitude: parseFloat(lieudepot?.latitude),
+            longitude: parseFloat(lieudepot?.longitude)
           }}
-         title='Ecole de Douala'
+          title='Ecole de Douala'
           pinColor="blue"
           image={require('../../../assets/images/icon-school.png')}
-
-         />
-         
-        { route.length >0 && <Polyline coordinates={route}  strokeWidth={strokeWidth} 
-        strokeColor= {'red'} />}
+        />
+      {route.length > 0 && <Polyline coordinates={route} strokeWidth={strokeWidth} strokeColor={'red'} />}
       </MapView>
     </View>
   );
