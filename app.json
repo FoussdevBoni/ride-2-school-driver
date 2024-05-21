@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permettre Ride-2-school d'utiliser votre localisation"
+        }
+      ]
+    ],
+    "name": "ride-school-driver",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCNJXjPNJI96OQs2Qfin46-Ow7sSeXx8nA"
+
+        }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ],
+      "package": "com.bonidev.rideschooldriver"
+    },
+    "web": {
+      "favicon": "./assets/images/logo.png"
+    },
+    "description": "Application destininée au chauffeur ",
+    "extra": {
+      "eas": {
+        "projectId": "8f4c84ef-8bf1-4909-a51b-4aecdba2fda6"
+      }
+    }
+  }
+}
