@@ -35,7 +35,7 @@ function UserHomeScreen({user}) {
     }
   }, [driverId, driverDataApi, dispatch]);
     return (
-        <ScrollView style={{flex: 1}} horizontal={false}>
+        <ScrollView style={{flex: 1}} horizontal={false} showsVerticalScrollIndicator={false}>
 
         <View style={styles.title}>
                 <Title>
@@ -43,11 +43,9 @@ function UserHomeScreen({user}) {
             </Title>
             </View>
             <UrgencesComponent user={user}/>
-
-
              <View style={styles.title}>
                 <Title>
-                Les liens importants
+                Les liens rapides
             </Title>
             </View>
           <Links user={user}/>

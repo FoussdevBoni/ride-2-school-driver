@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Button, TextInput, Modal, Text, ScrollView, TouchableOpacity , FlatList} from 'react-native';
+import { View, StyleSheet, Button, TextInput, Modal, Text, ScrollView, TouchableOpacity , FlatList, Dimensions} from 'react-native';
 import { IconButton, List, Colors, Avatar , Title} from 'react-native-paper';
-import Animated, { Easing } from 'react-native-reanimated';
-import LottieView from 'lottie-react-native'; // Assurez-vous que le nom du package est correct
-import { Ionicons } from '@expo/vector-icons';
+
 import { colors } from '../../../assets/styles/colors';
 import AppBarr from '../../general/AppBarr';
 import ModalContainer from '../../general/ModalContainer';
@@ -44,9 +42,10 @@ const UrgencesComponent = ({user}) => {
                       <List.Item
                 key={index.toString()}
                  title={item.type}
+                 titleStyle={{fontSize: 16}}
                 description={item.date}
               left={(props) => (
-                <Avatar.Icon {...props} icon="alert" style={{ backgroundColor:'white' , color: Colors.red500}} />
+                <Avatar.Icon {...props} icon="alert" style={{ backgroundColor:'white' , color: Colors.red500 , width: 50 , height: 50}} size={50}/>
               )}
               onPress={() => handleContact(item)}
             />
@@ -59,13 +58,15 @@ const UrgencesComponent = ({user}) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
      
          <UrgencesList limite={4}/>
-        <TouchableOpacity onPress={() => handleEmergencyReport('')} style={styles.button}>
+       <View style={styles.btnContainer}>
+          <TouchableOpacity onPress={() => handleEmergencyReport('')} style={styles.button}>
         <Text style={[styles.buttonText , {color: 'black'}]}>Voir tout </Text>
        
       </TouchableOpacity>
+       </View>
 
         <Modal visible={showModal} animationType="slide" transparent>
             <AppBarr title={'Mes urgences'} goBack={()=>{setShowModal(false)}}/>
@@ -76,27 +77,33 @@ const UrgencesComponent = ({user}) => {
   );
 };
 
+const {width , height} = Dimensions.get('screen')
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 5,
   },
+  btnContainer:{
+     justifyContent: 'center',
+     flexDirection: 'row',
+    alignItems: 'center'
+  },
+
   button: {
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     marginVertical: 20,
     backgroundColor: Colors.white,
-    justifyContent: 'center',
-    display: 'flex'
+    width: width*0.6
   },
   buttonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center'
   },
   emergenciesContainer: {
-    marginTop: 20,
+    marginTop: -10,
     width: '100%',
   },
   modalContainer: {

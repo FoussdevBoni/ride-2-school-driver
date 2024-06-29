@@ -57,7 +57,7 @@ export default function App() {
  <PaperProvider theme={theme}>
  <GestureHandlerRootView style={{ flex: 1 ,backgroundColor: '#ECF0F1' }}>
    <Provider store={store}>
-        <StatusBar style="light" backgroundColor={''}/>
+        <StatusBar style="light" backgroundColor={colors.primary}/>
        <Navigation />
    </Provider>
    </GestureHandlerRootView>

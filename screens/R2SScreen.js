@@ -26,7 +26,7 @@ const R2SScreen = ({user}) => {
         <View style={{flex: 1 , justifyContent: 'center' , alignItems: 'center'}} >  
         {
           selectedEnfants ? (
-            <Map enfants={selectedEnfants} user={user}/>
+              <Map enfants={selectedEnfants} user={user}/>
            ):  
              
                   <View style={styles.actionsButtons}>

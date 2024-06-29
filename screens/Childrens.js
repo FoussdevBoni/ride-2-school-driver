@@ -14,34 +14,19 @@ import { db } from '../backend/firebaseConfig';
 import { Text } from 'react-native';
 
 const ChildrenScreen = ({user}) => {
-  const [enfants, setEnfants] = useState(user.enfants);
+  const getPrenomOnly = (fullName)=>{
+    const noms  = fullName?.split(' ')
+    return noms[0]
+  }
+  const [enfants, setEnfants] = useState(user.enfants||[]);
 
        const driverId = user.id ||user._id
 
-
-  useEffect(()=>{
-    async  function getEnfants() {
-      console.log(childrenApi+'/'+driverId)
-      try {
-        const response = await axios.get(childrenApi+'/'+driverId)
-         const data = response.data
-         const dataArray = data?.map((child , index)=>({
-          ...child,
-          id: index
-         }))
-         console.log(dataArray)
-         setEnfants(dataArray)
-      } catch (error) {
-        console.log(error)
-      }
-   }
-
-   getEnfants()
-  },[user])
+console.log(user)
 const handleSwitchChange = (id, newValue) => {
   setEnfants((prevEnfants) =>
     prevEnfants.map((enfant) =>
-      enfant.id === id ? { ...enfant, isChecked: newValue } : enfant
+      enfant._id === id ? { ...enfant, isChecked: newValue } : enfant
     )
   );
 };
@@ -67,14 +52,12 @@ const selectedEnfants = enfants.filter((enfant) => enfant.isChecked);
    const navigation = useNavigation()
  if (enfantsAffiches.length>0||selectedEnfants.length>0) {
    return (
-  <View style={{ flex: 1, marginTop:0 }}>
+  <View style={{ flex: 1, marginTop:0 , paddingHorizontal: 20 }}>
      {
         selectedEnfants.length>0&&(
-                <Title style={{marginVertical: 38 , textAlign: 'center'}}>Enfants présents</Title>
-
-        )
-      }
-    <ScrollView horizontal>
+               <View>
+                 <Title style={{marginVertical: 38 , textAlign: 'start'}}>Enfants présents</Title>
+                  <ScrollView horizontal>
       {selectedEnfants.map((child) =>{
         return(
              (
@@ -89,34 +72,46 @@ const selectedEnfants = enfants.filter((enfant) => enfant.isChecked);
                     style={{ width: 50, height: 50, borderRadius: 25, margin: 5 }}
                   />
                   <Text>
-                     {child.nom}
+                     {getPrenomOnly(child.nom)}
                   </Text>
         </TouchableOpacity>
       )
       )})}
     </ScrollView>
-    <ScrollView>
+   </View>
+
+        )
+      }
+    
+
+    <ScrollView style={{marginTop: 20}}>
       {
         enfantsAffiches.length>0&&(
-                <Title style={{marginTop: 8 , textAlign: 'center'}}>Enfants à transporter</Title>
+                <Title style={{textAlign: 'start'}}>Enfants à transporter</Title>
 
         )
       }
       {enfantsAffiches.map((child) => (
-        <View key={child.id}>
-          <EnfantCard child={child} onSwitchChange={handleSwitchChange} />
+        <View key={child._id}>
+          <EnfantCard child={child} onSwitchChange={()=>{handleSwitchChange(child._id , child)}} />
           <Divider />
         </View>
       ))}
       <Br size={15}/>
     </ScrollView>
      <View style={{padding: 10}}>
-        <Button title={'Démarrer mon trajet'} style={{padding: 9}}onPress={()=>{
+       {
+        selectedEnfants.length>0&&(
+           <TouchableOpacity  style={styles.signUpBtn}onPress={()=>{
             startTravel()
             navigation.navigate('R2S' , {selectedEnfants})
         }}>
-    
-    </Button>
+       <Text style={{color: 'white' , textAlign: 'center' , fontSize: 16}}>
+         Démarrer mon trajet
+       </Text>
+    </TouchableOpacity>
+        )
+       }
      </View>
   </View>
 );
@@ -168,14 +163,15 @@ const styles = StyleSheet.create({
    searchBar:{
     width: width*0.75
    },
-      signUpBtn: {
-    borderRadius: 20, 
-    padding: 5, 
+     signUpBtn: {
+    borderRadius: 100, 
+    padding: 12, 
     marginVertical: 4, 
     backgroundColor: colors.primary
   },
   signInBtn:{
     marginVertical: 4, 
+       borderRadius: 20, 
 
   },
   label: {

@@ -10,6 +10,8 @@ import RidesScreen from '../../../screens/RidesScreen';
 import SendUrgence from '../ModalViews/SendUrgence';
 import { render } from 'react-dom';
 import Resa from '../ModalViews/Resa';
+import { useNavigation } from '@react-navigation/native';
+import ChildrenScreen from '../../../screens/Childrens';
 
 
 
@@ -20,40 +22,22 @@ const links = [
   {
      name: 'La Résa', 
     icon: 'person', 
-    render: <Resa />
+    render: <ChildrenScreen user={user} />
    },
     { 
-        name: 'Contacter Betacar', 
+        name: 'Urgences et alertes', 
         icon: 'call', 
 
    }, 
 
-   {
-     name: 'Contacter un parent', 
-     icon: 'call-outline'
-   }, 
-    {
-     name: 'Envoyer une urgence', 
-    icon: 'warning', 
-    render: <SendUrgence user={user} />
-   },
-   {
-     name: 'Historique de mes deplacements', 
-    icon: 'bus', 
-    render: <RidesScreen user={user}/>
-   },
-  
 
-    {
-     name: 'Ma note globale', 
-    icon: 'star'
-   },
 
 
 ]
      const [isModalVisible , setIsModalVisible ]= useState(false)
      const [title , setTitle] = useState('')
      const [render , setRender] = useState(null)
+     const navigation = useNavigation()
     const GridElement = ({ title, iconName , render }) => (
   <TouchableOpacity style={styles.gridItem} onPress={()=>{
    
@@ -100,7 +84,6 @@ const links = [
 const styles = StyleSheet.create({
   gridContainer: {
     paddingHorizontal: 10,
-    paddingVertical: 15,
   },
   gridItem: {
     flex: 1,
@@ -110,6 +93,7 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderRadius: 10,
+    
 
   },
   gridItemText: {

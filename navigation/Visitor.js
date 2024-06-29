@@ -96,7 +96,7 @@ const Visitor = () => {
           name="Se connecter"
           component={SignInScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             headerStyle: headerStyle,
             headerTintColor: 'white'
           }}

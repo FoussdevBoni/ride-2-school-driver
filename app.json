@@ -8,14 +8,14 @@
         }
       ]
     ],
-    "name": "ride-school-driver",
+    "name": "ride-school-parent",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/logo.png",
-      "resizeMode": "contain",
+      "image": "./assets/lancement.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
@@ -32,7 +32,6 @@
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyCNJXjPNJI96OQs2Qfin46-Ow7sSeXx8nA"
-
         }
       },
       "permissions": [
@@ -40,7 +39,7 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "package": "com.bonidev.rideschooldriver"
+      "package": "com.pythadev.rideschoolparent"
     },
     "web": {
       "favicon": "./assets/images/logo.png"
@@ -48,7 +47,7 @@
     "description": "Application destininée au chauffeur ",
     "extra": {
       "eas": {
-        "projectId": "8f4c84ef-8bf1-4909-a51b-4aecdba2fda6"
+        "projectId": "4177d6b9-b4f3-4228-8d6e-22bcde423c70"
       }
     }
   }

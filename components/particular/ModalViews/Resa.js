@@ -6,18 +6,9 @@ import { Divider, Title } from 'react-native-paper';
 import { Button } from 'react-native-elements';
 import { colors } from '../../../assets/styles/colors';
 
-const Resa = () => {
-  const [enfants, setEnfants] = useState([
-    { id: 1, prenom: 'John', nom: 'Doe', photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAzvgpX2jzRGfu7fdi2CPM4p_gjlDX9eWKl-ssjlVmsw&s', isChecked: false },
-    { id: 2, prenom: 'Jane', nom: 'Doe', photoUrl: 'https://img.freepik.com/photos-gratuite/fond-blanc-bras-absence-corporate-isolement_1134-958.jpg?w=740&t=st=1705858859~exp=1705859459~hmac=ec2787d673a0eb61cf13ec36c7b8ec44ea76b8cb5144d8cb5959e2ef2ac0fb8d', isChecked: false },
-    { id: 3, prenom: 'John', nom: 'Doe', photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAzvgpX2jzRGfu7fdi2CPM4p_gjlDX9eWKl-ssjlVmsw&s', isChecked: false },
-    { id: 4, prenom: 'Jane', nom: 'Doe', photoUrl: 'https://img.freepik.com/photos-gratuite/fond-blanc-bras-absence-corporate-isolement_1134-958.jpg?w=740&t=st=1705858859~exp=1705859459~hmac=ec2787d673a0eb61cf13ec36c7b8ec44ea76b8cb5144d8cb5959e2ef2ac0fb8d', isChecked: false },
-    { id: 5, prenom: 'John', nom: 'Doe', photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAzvgpX2jzRGfu7fdi2CPM4p_gjlDX9eWKl-ssjlVmsw&s', isChecked: false },
-    { id: 6, prenom: 'Jane', nom: 'Doe', photoUrl: 'https://img.freepik.com/photos-gratuite/fond-blanc-bras-absence-corporate-isolement_1134-958.jpg?w=740&t=st=1705858859~exp=1705859459~hmac=ec2787d673a0eb61cf13ec36c7b8ec44ea76b8cb5144d8cb5959e2ef2ac0fb8d', isChecked: false },
-    { id: 7, prenom: 'John', nom: 'Doe', photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAzvgpX2jzRGfu7fdi2CPM4p_gjlDX9eWKl-ssjlVmsw&s', isChecked: false },
-    { id: 8, prenom: 'Jane', nom: 'Doe', photoUrl: 'https://img.freepik.com/photos-gratuite/fond-blanc-bras-absence-corporate-isolement_1134-958.jpg?w=740&t=st=1705858859~exp=1705859459~hmac=ec2787d673a0eb61cf13ec36c7b8ec44ea76b8cb5144d8cb5959e2ef2ac0fb8d', isChecked: false },
-    // Ajoutez d'autres enfants selon vos besoins
-  ]);
+const Resa = ({user}) => {
+  const [enfants, setEnfants] = useState(user?.enfants||[]);
+
 const handleSwitchChange = (id, newValue) => {
   setEnfants((prevEnfants) =>
     prevEnfants.map((enfant) =>
@@ -26,8 +17,8 @@ const handleSwitchChange = (id, newValue) => {
   );
 };
 
-const enfantsAffiches = enfants.filter((enfant) => !enfant.isChecked);
-  const selectedEnfants = enfants.filter((enfant) => enfant.isChecked);
+const enfantsAffiches = enfants?.filter((enfant) => !enfant.isChecked);
+  const selectedEnfants = enfants?.filter((enfant) => enfant.isChecked);
 
 return (
   <View style={{ flex: 1, marginTop:0 }}>

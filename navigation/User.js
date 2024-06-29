@@ -109,7 +109,7 @@ export default function User() {
   const user = useSelector(state => state.currentUser.user)
 
   return (
- <View style={{flex: 1}}>
+ <View style={{flex: 1 , marginTop: 30}}>
     <NavigationContainer ref={navigationRef}>
         <Stack.Navigator   screenOptions={({ route, navigation }) => ({
           gestureDirection: getGestureDirection(route, navigation),
